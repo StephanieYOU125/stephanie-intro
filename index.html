@@ -244,6 +244,71 @@
       .roadmap-item { grid-template-columns:1fr; gap:5px; }
       .script-area { padding:22px; }
     }
+  
+    /* --- Editable CMS / Firebase admin --- */
+    .admin-toolbar {
+      position: sticky; top: 76px; z-index: 45;
+      display: none; align-items: center; flex-wrap: wrap; gap: 9px;
+      padding: 10px 5vw;
+      border-bottom: 1px solid rgba(214,180,106,.22);
+      background: rgba(18,15,10,.94);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 34px rgba(0,0,0,.22);
+    }
+    .admin-toolbar.visible { display: flex; }
+    .admin-label { margin-right: auto; color: var(--gold2); font-size: 12px; font-weight: 850; letter-spacing: .08em; }
+    .admin-status { color: var(--muted); font-size: 11px; }
+    .admin-btn {
+      border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px;
+      background: rgba(255,255,255,.05); color: var(--cream); cursor: pointer;
+    }
+    .admin-btn.primary { background: var(--gold); border-color: var(--gold); color: #111; font-weight: 850; }
+    .admin-btn:disabled { opacity: .42; cursor: not-allowed; }
+    body.edit-mode [data-edit-key] {
+      position: relative;
+      outline: 1px dashed rgba(214,180,106,.58);
+      outline-offset: 4px;
+      border-radius: 4px;
+      cursor: text;
+      transition: outline-color .15s ease, background .15s ease;
+    }
+    body.edit-mode [data-edit-key]:hover,
+    body.edit-mode [data-edit-key]:focus {
+      outline: 2px solid var(--gold);
+      background: rgba(214,180,106,.08);
+    }
+    body.edit-mode [data-edit-key]:empty::before {
+      content: "Click to edit";
+      color: var(--muted2);
+    }
+    .edit-tip {
+      display: none; position: fixed; right: 18px; bottom: 18px; z-index: 60;
+      max-width: 280px; padding: 12px 14px; border: 1px solid rgba(214,180,106,.28);
+      border-radius: 14px; background: rgba(10,10,10,.94); color: var(--muted);
+      box-shadow: var(--shadow); font-size: 12px; line-height: 1.55;
+    }
+    body.edit-mode .edit-tip { display: block; }
+    #adminLogin {
+      width: min(430px, 92vw); border: 1px solid var(--line); border-radius: 22px;
+      padding: 0; color: var(--cream); background: #111; box-shadow: var(--shadow);
+    }
+    #adminLogin::backdrop { background: rgba(0,0,0,.72); backdrop-filter: blur(5px); }
+    .login-wrap { padding: 26px; }
+    .login-wrap h3 { margin: 0 0 8px; }
+    .login-wrap p { margin: 0 0 20px; color: var(--muted); line-height: 1.6; font-size: 13px; }
+    .login-field { display: grid; gap: 6px; margin: 13px 0; }
+    .login-field label { color: var(--muted); font-size: 12px; }
+    .login-field input {
+      width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px;
+      background: rgba(255,255,255,.06); color: var(--cream); outline: none;
+    }
+    .login-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 18px; }
+    .login-error { min-height: 20px; color: #e2a4a4; font-size: 12px; margin-top: 10px; }
+    @media (max-width: 620px) {
+      .admin-toolbar { top: 76px; padding: 9px 18px; }
+      .admin-label { width: 100%; }
+    }
+
   </style>
 </head>
 <body>
@@ -259,6 +324,37 @@
       <a href="#intro">Introduction</a>
     </nav>
   </header>
+
+  <div class="admin-toolbar" id="adminToolbar" aria-label="Admin editing toolbar">
+    <div class="admin-label">STEPHANIE UNIVERSE · EDITOR</div>
+    <span class="admin-status" id="cloudStatus">Loading…</span>
+    <button class="admin-btn" id="loginBtn" type="button">Login</button>
+    <button class="admin-btn" id="editBtn" type="button">Edit</button>
+    <button class="admin-btn primary" id="saveBtn" type="button" disabled>Save</button>
+    <button class="admin-btn" id="reloadBtn" type="button">Reload</button>
+  </div>
+  <div class="edit-tip">Editing mode is on. Click any highlighted text to edit it directly. Changes are saved only when you press <strong>Save</strong>.</div>
+
+  <dialog id="adminLogin">
+    <form class="login-wrap" method="dialog" id="loginForm">
+      <h3>Admin Login</h3>
+      <p>Sign in with the Firebase Authentication account that owns this site.</p>
+      <div class="login-field">
+        <label for="adminEmail">Email</label>
+        <input id="adminEmail" type="email" autocomplete="username" required>
+      </div>
+      <div class="login-field">
+        <label for="adminPassword">Password</label>
+        <input id="adminPassword" type="password" autocomplete="current-password" required>
+      </div>
+      <div class="login-error" id="loginError"></div>
+      <div class="login-actions">
+        <button class="admin-btn" value="cancel" type="button" id="cancelLogin">Cancel</button>
+        <button class="admin-btn primary" type="submit">Sign in</button>
+      </div>
+    </form>
+  </dialog>
+
 
   <main id="main">
     <section class="hero" id="top">
@@ -547,6 +643,7 @@ function render() {
   elScript.innerHTML = item.html;
   elStatus.textContent = "";
   document.documentElement.lang = currentLang === "zh" ? "zh-Hant" : currentLang;
+  window.afterIntroRender?.();
 }
 document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
@@ -580,5 +677,367 @@ document.getElementById("stopBtn").addEventListener("click", () => {
 });
 render();
 </script>
+
+<script src="firebase-config.js"></script>
+
+<script type="module">
+  const STORAGE_KEY = "stephanie-universe-content-v2";
+  const params = new URLSearchParams(location.search);
+  const adminMode = params.get("edit") === "1";
+  const toolbar = document.getElementById("adminToolbar");
+  const editBtn = document.getElementById("editBtn");
+  const saveBtn = document.getElementById("saveBtn");
+  const reloadBtn = document.getElementById("reloadBtn");
+  const loginBtn = document.getElementById("loginBtn");
+  const cloudStatus = document.getElementById("cloudStatus");
+  const loginDialog = document.getElementById("adminLogin");
+  const loginForm = document.getElementById("loginForm");
+  const cancelLogin = document.getElementById("cancelLogin");
+  const loginError = document.getElementById("loginError");
+
+  let editing = false;
+  let savedFields = {};
+  let draftFields = {};
+  let db = null;
+  let auth = null;
+  let firebaseReady = false;
+  let signedInUser = null;
+  let fb = null;
+
+  if (adminMode) toolbar.classList.add("visible");
+
+  function setKey(el, key) {
+    if (el) el.dataset.editKey = key;
+  }
+
+  function setIndexedKeys(selector, prefix, childSelectors) {
+    document.querySelectorAll(selector).forEach((card, i) => {
+      for (const [suffix, childSelector] of childSelectors) {
+        const el = childSelector === ":scope" ? card : card.querySelector(childSelector);
+        setKey(el, prefix + "." + i + "." + suffix);
+      }
+    });
+  }
+
+  function assignEditableKeys() {
+    setKey(document.querySelector(".hero .eyebrow"), "hero.eyebrow");
+    setKey(document.querySelector(".hero h1"), "hero.title");
+    setKey(document.querySelector(".hero-copy"), "hero.copy");
+    document.querySelectorAll(".hero-actions .btn").forEach((el, i) => setKey(el, "hero.action." + i));
+
+    setKey(document.querySelector(".company-mark"), "company.mark");
+    setKey(document.querySelector(".status-dot"), "company.status");
+    setKey(document.querySelector(".company-card h2"), "company.name");
+    setKey(document.querySelector(".company-card .sub"), "company.subtitle");
+    setIndexedKeys(".fact", "company.fact", [
+      ["label", "small"],
+      ["value", "strong"]
+    ]);
+
+    const sections = document.querySelectorAll(".section");
+    sections.forEach((section, i) => {
+      const kicker = section.querySelector(":scope > .kicker, .section-head .kicker");
+      const heading = section.querySelector(".section-head h2");
+      const desc = section.querySelector(".section-head > p");
+      if (kicker) setKey(kicker, "section." + i + ".kicker");
+      if (heading) setKey(heading, "section." + i + ".heading");
+      if (desc) setKey(desc, "section." + i + ".description");
+    });
+
+    setKey(document.querySelector(".mission"), "mission.body");
+
+    setIndexedKeys(".unit", "unit", [
+      ["num", ".unit-num"],
+      ["title", "h3"],
+      ["body", "p"],
+      ["footer", ".unit-footer"]
+    ]);
+
+    setIndexedKeys(".asset", "asset", [
+      ["title", "h3"],
+      ["body", "p"]
+    ]);
+
+    setIndexedKeys(".roadmap-item", "roadmap", [
+      ["label", "strong"],
+      ["body", "div"]
+    ]);
+
+    setIndexedKeys(".principle", "principle", [
+      ["title", "b"],
+      ["body", "span"]
+    ]);
+
+    setKey(document.querySelector(".intro-side h3"), "intro.rule.heading");
+    setKey(document.querySelector(".intro-side p"), "intro.rule.body");
+    document.querySelectorAll(".intro-side li").forEach((el, i) => setKey(el, "intro.rule.item." + i));
+
+    setKey(document.querySelector(".footer-note"), "footer.note");
+    setKey(document.querySelector("body > footer"), "footer.copyright");
+
+    assignIntroKeys();
+  }
+
+  function assignIntroKeys() {
+    const title = document.getElementById("scriptTitle");
+    const use = document.getElementById("useCase");
+    const body = document.getElementById("script");
+    if (!title || !use || !body || typeof currentLang === "undefined" || typeof currentMode === "undefined") return;
+    setKey(title, "intro." + currentLang + "." + currentMode + ".title");
+    setKey(use, "intro." + currentLang + "." + currentMode + ".use");
+    setKey(body, "intro." + currentLang + "." + currentMode + ".html");
+    applyElement(title);
+    applyElement(use);
+    applyElement(body);
+    if (editing) enableEditable(title, true), enableEditable(use, true), enableEditable(body, true);
+  }
+
+  window.afterIntroRender = assignIntroKeys;
+
+  function currentValue(key) {
+    return Object.prototype.hasOwnProperty.call(draftFields, key)
+      ? draftFields[key]
+      : savedFields[key];
+  }
+
+  function applyElement(el) {
+    if (!el?.dataset.editKey) return;
+    const value = currentValue(el.dataset.editKey);
+    if (typeof value === "string") el.innerHTML = value;
+  }
+
+  function applyAll() {
+    document.querySelectorAll("[data-edit-key]").forEach(applyElement);
+  }
+
+  function enableEditable(el, on) {
+    if (!el) return;
+    el.contentEditable = on ? "true" : "false";
+    el.spellcheck = on;
+  }
+
+  function setEditing(on) {
+    editing = on;
+    document.body.classList.toggle("edit-mode", on);
+    document.querySelectorAll("[data-edit-key]").forEach(el => enableEditable(el, on));
+    editBtn.textContent = on ? "Done" : "Edit";
+    saveBtn.disabled = !on;
+    if (!on) document.activeElement?.blur?.();
+  }
+
+  function captureAll() {
+    document.querySelectorAll("[data-edit-key]").forEach(el => {
+      draftFields[el.dataset.editKey] = el.innerHTML;
+    });
+  }
+
+  document.addEventListener("input", event => {
+    const el = event.target.closest?.("[data-edit-key]");
+    if (editing && el) {
+      draftFields[el.dataset.editKey] = el.innerHTML;
+      saveBtn.disabled = false;
+    }
+  });
+
+  async function loadLocal() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      savedFields = parsed.fields || {};
+      draftFields = {...savedFields};
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function saveLocal(fields) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      version: 2,
+      updatedAt: new Date().toISOString(),
+      fields
+    }));
+  }
+
+  function firebaseConfigured() {
+    const cfg = window.STEPHANIE_FIREBASE?.config;
+    return !!(cfg?.apiKey && cfg?.projectId && cfg?.appId);
+  }
+
+  async function initFirebase() {
+    if (!firebaseConfigured()) {
+      cloudStatus.textContent = "Local mode · Firebase not configured";
+      loginBtn.disabled = true;
+      await loadLocal();
+      applyAll();
+      return;
+    }
+
+    try {
+      const version = "12.19.0";
+      const [
+        appMod,
+        authMod,
+        fireMod
+      ] = await Promise.all([
+        import("https://www.gstatic.com/firebasejs/" + version + "/firebase-app.js"),
+        import("https://www.gstatic.com/firebasejs/" + version + "/firebase-auth.js"),
+        import("https://www.gstatic.com/firebasejs/" + version + "/firebase-firestore.js")
+      ]);
+
+      const app = appMod.initializeApp(window.STEPHANIE_FIREBASE.config);
+      auth = authMod.getAuth(app);
+      db = fireMod.getFirestore(app);
+      fb = {authMod, fireMod};
+      firebaseReady = true;
+
+      authMod.onAuthStateChanged(auth, user => {
+        signedInUser = user || null;
+        loginBtn.textContent = user ? "Logout" : "Login";
+        cloudStatus.textContent = user
+          ? "Cloud connected · " + (user.email || "signed in")
+          : "Cloud connected · public view";
+      });
+
+      await loadCloud();
+    } catch (error) {
+      console.error(error);
+      cloudStatus.textContent = "Firebase error · using local copy";
+      await loadLocal();
+      applyAll();
+    }
+  }
+
+  async function loadCloud() {
+    if (!firebaseReady) return false;
+    try {
+      const ref = fb.fireMod.doc(
+        db,
+        window.STEPHANIE_FIREBASE.collection || "siteContent",
+        window.STEPHANIE_FIREBASE.document || "main"
+      );
+      const snap = await fb.fireMod.getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data();
+        savedFields = data.fields || {};
+        draftFields = {...savedFields};
+        saveLocal(savedFields);
+        applyAll();
+        cloudStatus.textContent = signedInUser ? "Cloud loaded · signed in" : "Cloud loaded · public view";
+        return true;
+      }
+      await loadLocal();
+      applyAll();
+      cloudStatus.textContent = "Cloud connected · no saved document yet";
+      return false;
+    } catch (error) {
+      console.error(error);
+      await loadLocal();
+      applyAll();
+      cloudStatus.textContent = "Cloud read failed · local copy loaded";
+      return false;
+    }
+  }
+
+  async function saveCloud() {
+    captureAll();
+    const fields = {...savedFields, ...draftFields};
+    saveLocal(fields);
+
+    if (!firebaseReady) {
+      savedFields = fields;
+      draftFields = {...fields};
+      cloudStatus.textContent = "Saved locally · connect Firebase for cloud sync";
+      return;
+    }
+
+    if (!signedInUser) {
+      cloudStatus.textContent = "Saved locally · login to publish to cloud";
+      loginDialog.showModal();
+      return;
+    }
+
+    try {
+      const ref = fb.fireMod.doc(
+        db,
+        window.STEPHANIE_FIREBASE.collection || "siteContent",
+        window.STEPHANIE_FIREBASE.document || "main"
+      );
+      await fb.fireMod.setDoc(ref, {
+        version: 2,
+        fields,
+        updatedAt: fb.fireMod.serverTimestamp()
+      }, {merge: true});
+      savedFields = fields;
+      draftFields = {...fields};
+      cloudStatus.textContent = "Saved to Firebase ✓";
+    } catch (error) {
+      console.error(error);
+      cloudStatus.textContent = "Cloud save blocked · check Firestore rules / UID";
+    }
+  }
+
+  editBtn.addEventListener("click", () => setEditing(!editing));
+  saveBtn.addEventListener("click", saveCloud);
+  reloadBtn.addEventListener("click", async () => {
+    if (firebaseReady) await loadCloud();
+    else { await loadLocal(); draftFields = {...savedFields}; applyAll(); }
+    if (editing) setEditing(true);
+    cloudStatus.textContent = firebaseReady ? "Reloaded from cloud" : "Reloaded local copy";
+  });
+
+  loginBtn.addEventListener("click", async () => {
+    if (!firebaseReady) return;
+    if (signedInUser) {
+      await fb.authMod.signOut(auth);
+      cloudStatus.textContent = "Signed out · public view";
+      return;
+    }
+    loginError.textContent = "";
+    loginDialog.showModal();
+  });
+
+  cancelLogin.addEventListener("click", () => loginDialog.close());
+
+  loginForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    loginError.textContent = "";
+    try {
+      const email = document.getElementById("adminEmail").value.trim();
+      const password = document.getElementById("adminPassword").value;
+      await fb.authMod.signInWithEmailAndPassword(auth, email, password);
+      loginDialog.close();
+      cloudStatus.textContent = "Signed in · ready to publish";
+    } catch (error) {
+      console.error(error);
+      loginError.textContent = "Login failed. Check your Firebase email/password.";
+    }
+  });
+
+  // Keep edits to the currently visible intro before switching language/mode.
+  document.querySelectorAll(".tab, .mode").forEach(btn => {
+    btn.addEventListener("mousedown", () => {
+      if (editing) captureAll();
+    }, {capture: true});
+    btn.addEventListener("touchstart", () => {
+      if (editing) captureAll();
+    }, {capture: true, passive: true});
+  });
+
+  assignEditableKeys();
+  await initFirebase();
+  assignEditableKeys();
+  applyAll();
+
+  // Convenience: Ctrl/Cmd + Shift + E opens editor mode on the current page.
+  document.addEventListener("keydown", e => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "e") {
+      toolbar.classList.add("visible");
+      setEditing(!editing);
+    }
+  });
+</script>
+
 </body>
 </html>
