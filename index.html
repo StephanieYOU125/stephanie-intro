@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0b0b" />
+  <title>Self Introduction | Stephanie Universe</title>
+  <meta name="description" content="Stephanie You 的中英日文自我介紹練習頁：20 秒與 60 秒版本、日文讀音、複製與朗讀功能。" />
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #070707;
+      --bg2: #111;
+      --gold: #d6b46a;
+      --gold2: #f2da9b;
+      --white: #f7f1e8;
+      --muted: #b9b0a3;
+      --card: rgba(255,255,255,.065);
+      --line: rgba(255,255,255,.13);
+      --soft: rgba(214,180,106,.12);
+      --shadow: 0 28px 80px rgba(0,0,0,.45);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Noto Sans TC", "Noto Sans JP", Arial, sans-serif;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(214,180,106,.20), transparent 30%),
+        radial-gradient(circle at 88% 8%, rgba(255,255,255,.08), transparent 24%),
+        linear-gradient(135deg, var(--bg), var(--bg2) 50%, #050505);
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      height: 72px;
+      padding: 0 5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      background: rgba(0,0,0,.68);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      font-weight: 900;
+      letter-spacing: 2.3px;
+      font-size: 17px;
+      white-space: nowrap;
+    }
+    .brand span { color: var(--gold); }
+    .back {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .back:hover { color: var(--gold2); }
+
+    .hero {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 76px 28px 28px;
+    }
+    .eyebrow {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 14px 0 18px;
+      font-size: clamp(44px, 7vw, 88px);
+      line-height: .98;
+      letter-spacing: -3px;
+    }
+    .lead {
+      max-width: 780px;
+      color: #ddd4c8;
+      line-height: 1.9;
+      font-size: 17px;
+      margin: 0;
+    }
+
+    .toolbar,
+    .subtoolbar {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 28px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .tab, .mode, .action {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.045);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .tab:hover, .mode:hover, .action:hover {
+      border-color: rgba(214,180,106,.5);
+      color: var(--white);
+    }
+    .tab.active, .mode.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #111;
+      font-weight: 850;
+    }
+    .action {
+      color: var(--gold2);
+      border-color: rgba(214,180,106,.30);
+      background: rgba(214,180,106,.08);
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 28px 80px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .6fr);
+      gap: 22px;
+      align-items: start;
+    }
+    .card {
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+    .script-card { padding: 28px; }
+    .script-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .script-meta strong {
+      color: var(--gold2);
+      font-size: 14px;
+    }
+    .script {
+      font-size: clamp(19px, 2.1vw, 27px);
+      line-height: 1.95;
+      letter-spacing: .01em;
+    }
+    .script p { margin: 0 0 18px; }
+    .script p:last-child { margin-bottom: 0; }
+    ruby rt {
+      font-size: .48em;
+      color: var(--gold2);
+      letter-spacing: 0;
+    }
+
+    .side {
+      display: grid;
+      gap: 18px;
+    }
+    .side-card { padding: 22px; }
+    .side-card h2 {
+      margin: 0 0 12px;
+      font-size: 17px;
+      color: var(--gold2);
+    }
+    .side-card p, .side-card li {
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 14px;
+    }
+    .side-card ul { margin: 0; padding-left: 20px; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .badge {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      border: 1px solid rgba(214,180,106,.28);
+      color: var(--gold2);
+      font-size: 12px;
+    }
+    .note {
+      margin-top: 16px;
+      padding: 13px 14px;
+      border-left: 3px solid var(--gold);
+      background: rgba(214,180,106,.08);
+      color: #d8cdbf;
+      line-height: 1.7;
+      font-size: 13px;
+      border-radius: 0 12px 12px 0;
+    }
+    .status {
+      min-height: 24px;
+      margin: 12px 0 0;
+      color: var(--gold2);
+      font-size: 13px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      text-align: center;
+      color: #857d72;
+      padding: 30px 20px 40px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+      h1 { letter-spacing: -2px; }
+      .hero { padding-top: 54px; }
+      .script { font-size: 20px; }
+    }
+    @media (max-width: 560px) {
+      header { padding: 0 18px; }
+      .back { display: none; }
+      .hero, .toolbar, .subtoolbar, main { padding-left: 18px; padding-right: 18px; }
+      .hero { padding-top: 46px; }
+      h1 { font-size: 46px; }
+      .lead { font-size: 15px; }
+      .script-card { padding: 21px; }
+      .script-meta { display: block; }
+      .script-meta span { display: block; margin-top: 5px; }
+    }
+    @media print {
+      header, .toolbar, .subtoolbar, .side, footer { display: none !important; }
+      body { background: white; color: #111; }
+      main, .hero { max-width: none; padding: 24px; }
+      .card { box-shadow: none; border: 1px solid #ccc; background: white; }
+      .script, .lead, .eyebrow, .script-meta, ruby rt { color: #111; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="index.html">STEPHANIE<span> UNIVERSE</span></a>
+    <a class="back" href="about.html">← Back to About</a>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Self Introduction · 自我介紹 · 自己紹介</div>
+    <h1>Three Languages.<br>One Story.</h1>
+    <p class="lead">
+      用中文、英文與日文介紹我是誰、從哪裡來，以及我正在做什麼。
+      可切換 20 秒與 60 秒版本，適合新同學、教授、研究交流與一般社交場合。
+    </p>
+  </section>
+
+  <div class="toolbar" aria-label="Language selector">
+    <button class="tab active" data-lang="zh">中文</button>
+    <button class="tab" data-lang="en">English</button>
+    <button class="tab" data-lang="ja">日本語</button>
+  </div>
+
+  <div class="subtoolbar">
+    <button class="mode active" data-mode="short">20 秒</button>
+    <button class="mode" data-mode="full">60 秒</button>
+    <button class="action" id="copyBtn">複製文字</button>
+    <button class="action" id="speakBtn">▶ 朗讀</button>
+    <button class="action" id="stopBtn">■ 停止</button>
+  </div>
+
+  <main>
+    <div class="grid">
+      <section class="card script-card">
+        <div class="script-meta">
+          <strong id="scriptTitle">中文｜20 秒版本</strong>
+          <span id="useCase">適合：第一次見面、課堂快速自介</span>
+        </div>
+        <div class="script" id="script"></div>
+        <div class="status" id="status" aria-live="polite"></div>
+      </section>
+
+      <aside class="side">
+        <section class="card side-card">
+          <h2>核心身份</h2>
+          <div class="badge-row">
+            <span class="badge">Taiwan</span>
+            <span class="badge">Public Service</span>
+            <span class="badge">Transportation</span>
+            <span class="badge">AI Vision</span>
+            <span class="badge">UTokyo PhD</span>
+          </div>
+        </section>
+
+        <section class="card side-card">
+          <h2>使用方式</h2>
+          <ul>
+            <li>第一次見面：20 秒版。</li>
+            <li>教授、研究室或正式交流：60 秒版。</li>
+            <li>日文版不要追求一次講完，先穩定說清楚身份與研究方向。</li>
+            <li>講完後停一下，讓對方有機會追問。</li>
+          </ul>
+          <div class="note">
+            重點不是把履歷全部念完，而是讓對方在 30 秒內知道「你是誰、你從哪裡來、你現在在做什麼」。
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer>© 2026 Stephanie You · Stephanie Universe</footer>
+
+  <script>
+    const scripts = {
+      zh: {
+        short: {
+          title: "中文｜20 秒版本",
+          use: "適合：第一次見面、課堂快速自介",
+          html: `
+            <p>大家好，我是游文歆，英文名字是 Stephanie，來自台灣。</p>
+            <p>我過去有警政與交通安全的工作經驗，也完成了台大交通工程碩士。接下來我會在東京大學攻讀博士，研究人、科技與城市安全之間的關係。</p>
+            <p>很高興認識大家。</p>
+          `
+        },
+        full: {
+          title: "中文｜60 秒版本",
+          use: "適合：教授、研究室、正式交流",
+          html: `
+            <p>大家好，我是游文歆，英文名字是 Stephanie，來自台灣。</p>
+            <p>我過去在台北從事警政工作，累積了交通、安全管理與跨單位協調的實務經驗。同時，我也完成了國立台灣大學交通工程碩士，研究主要運用電腦視覺分析行人與車輛的互動，評估行人穿越道的安全。</p>
+            <p>2026 年秋季，我會進入東京大學土木工程相關博士課程。我希望把實務經驗、交通工程、AI 視覺分析與人因研究結合起來，進一步理解人們如何感受風險、做決策，以及城市可以如何被設計得更安全。</p>
+            <p>平常我也很喜歡旅行、學習語言和接觸不同領域。很高興認識大家，也期待之後有機會交流。</p>
+          `
+        }
+      },
+      en: {
+        short: {
+          title: "English｜20-second version",
+          use: "Best for: first meetings and quick class introductions",
+          html: `
+            <p>Hello, I'm Wun-Sin You, and you can call me Stephanie. I'm from Taiwan.</p>
+            <p>I have a background in public service and traffic safety, and I completed my master's degree in Transportation Engineering at National Taiwan University. I will begin my PhD studies at the University of Tokyo, focusing on people, technology, and safer cities.</p>
+            <p>It's nice to meet you.</p>
+          `
+        },
+        full: {
+          title: "English｜60-second version",
+          use: "Best for: professors, labs, research and formal networking",
+          html: `
+            <p>Hello, I'm Wun-Sin You, and you can call me Stephanie. I'm from Taiwan.</p>
+            <p>I have several years of experience in public service in Taipei, where I worked on traffic operations, safety management, and coordination across different agencies. At the same time, I completed my master's degree in Transportation Engineering at National Taiwan University.</p>
+            <p>My master's research used computer vision to analyze interactions between pedestrians and vehicles and to evaluate pedestrian crossing safety.</p>
+            <p>In the autumn of 2026, I will begin my doctoral studies at the University of Tokyo. I hope to connect real-world safety experience with transportation engineering, AI-based vision analysis, and human factors research to better understand how people perceive risk, make decisions, and move through cities.</p>
+            <p>Outside research, I enjoy traveling, learning languages, and exploring new fields. It's very nice to meet you, and I look forward to learning from everyone.</p>
+          `
+        }
+      },
+      ja: {
+        short: {
+          title: "日本語｜20秒バージョン",
+          use: "おすすめ：初対面・授業での短い自己紹介",
+          html: `
+            <p>はじめまして。<ruby>游文歆<rt>ユウ・ウンシン</rt></ruby>です。Stephanie と<ruby>呼<rt>よ</rt></ruby>んでください。<ruby>台湾<rt>たいわん</rt></ruby>から<ruby>来<rt>き</rt></ruby>ました。</p>
+            <p>これまで<ruby>警察<rt>けいさつ</rt></ruby>と<ruby>交通安全<rt>こうつうあんぜん</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>をしてきました。また、<ruby>台湾大学<rt>たいわんだいがく</rt></ruby>で<ruby>交通工学<rt>こうつうこうがく</rt></ruby>の<ruby>修士号<rt>しゅうしごう</rt></ruby>を<ruby>取<rt>と</rt></ruby>りました。</p>
+            <p>これから<ruby>東京大学<rt>とうきょうだいがく</rt></ruby>の<ruby>博士課程<rt>はくしかてい</rt></ruby>で、<ruby>人<rt>ひと</rt></ruby>と<ruby>技術<rt>ぎじゅつ</rt></ruby>と<ruby>都市<rt>とし</rt></ruby>の<ruby>安全<rt>あんぜん</rt></ruby>について<ruby>研究<rt>けんきゅう</rt></ruby>します。よろしくお<ruby>願<rt>ねが</rt></ruby>いします。</p>
+          `
+        },
+        full: {
+          title: "日本語｜60秒バージョン",
+          use: "おすすめ：先生・研究室・正式な交流",
+          html: `
+            <p>はじめまして。<ruby>游文歆<rt>ユウ・ウンシン</rt></ruby>です。Stephanie と<ruby>呼<rt>よ</rt></ruby>んでください。<ruby>台湾<rt>たいわん</rt></ruby>から<ruby>来<rt>き</rt></ruby>ました。</p>
+            <p>これまで<ruby>台北<rt>たいぺい</rt></ruby>で<ruby>警察<rt>けいさつ</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>をして、<ruby>交通<rt>こうつう</rt></ruby>、<ruby>安全管理<rt>あんぜんかんり</rt></ruby>、そしていろいろな<ruby>機関<rt>きかん</rt></ruby>との<ruby>調整<rt>ちょうせい</rt></ruby>を<ruby>経験<rt>けいけん</rt></ruby>しました。</p>
+            <p>また、<ruby>台湾大学<rt>たいわんだいがく</rt></ruby>で<ruby>交通工学<rt>こうつうこうがく</rt></ruby>の<ruby>修士課程<rt>しゅうしかてい</rt></ruby>を<ruby>修了<rt>しゅうりょう</rt></ruby>しました。<ruby>修士研究<rt>しゅうしけんきゅう</rt></ruby>では、コンピュータビジョンを<ruby>使<rt>つか</rt></ruby>って、<ruby>歩行者<rt>ほこうしゃ</rt></ruby>と<ruby>車<rt>くるま</rt></ruby>の<ruby>動<rt>うご</rt></ruby>きを<ruby>分析<rt>ぶんせき</rt></ruby>し、<ruby>横断歩道<rt>おうだんほどう</rt></ruby>の<ruby>安全性<rt>あんぜんせい</rt></ruby>を<ruby>研究<rt>けんきゅう</rt></ruby>しました。</p>
+            <p>2026<ruby>年<rt>ねん</rt></ruby><ruby>秋<rt>あき</rt></ruby>から、<ruby>東京大学<rt>とうきょうだいがく</rt></ruby>の<ruby>博士課程<rt>はくしかてい</rt></ruby>で<ruby>研究<rt>けんきゅう</rt></ruby>を<ruby>始<rt>はじ</rt></ruby>めます。<ruby>実務経験<rt>じつむけいけん</rt></ruby>、<ruby>交通工学<rt>こうつうこうがく</rt></ruby>、AI、そして<ruby>人間<rt>にんげん</rt></ruby>の<ruby>行動<rt>こうどう</rt></ruby>をつなげて、より<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>都市<rt>とし</rt></ruby>について<ruby>研究<rt>けんきゅう</rt></ruby>したいです。</p>
+            <p><ruby>旅行<rt>りょこう</rt></ruby>や<ruby>語学<rt>ごがく</rt></ruby>も<ruby>好<rt>す</rt></ruby>きです。これからどうぞよろしくお<ruby>願<rt>ねが</rt></ruby>いします。</p>
+          `
+        }
+      }
+    };
+
+    let currentLang = "zh";
+    let currentMode = "short";
+
+    const script = document.getElementById("script");
+    const scriptTitle = document.getElementById("scriptTitle");
+    const useCase = document.getElementById("useCase");
+    const status = document.getElementById("status");
+
+    function plainTextFromHTML(html) {
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      div.querySelectorAll("rt").forEach(el => el.remove());
+      return div.innerText.replace(/\n{3,}/g, "\n\n").trim();
+    }
+
+    function render() {
+      const item = scripts[currentLang][currentMode];
+      script.innerHTML = item.html;
+      scriptTitle.textContent = item.title;
+      useCase.textContent = item.use;
+      status.textContent = "";
+      document.documentElement.lang = currentLang === "zh" ? "zh-Hant" : currentLang;
+    }
+
+    document.querySelectorAll(".tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentLang = btn.dataset.lang;
+        render();
+      });
+    });
+
+    document.querySelectorAll(".mode").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".mode").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentMode = btn.dataset.mode;
+        render();
+      });
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const text = plainTextFromHTML(scripts[currentLang][currentMode].html);
+      try {
+        await navigator.clipboard.writeText(text);
+        status.textContent = "已複製到剪貼簿。";
+      } catch {
+        status.textContent = "瀏覽器未允許自動複製，請手動選取文字。";
+      }
+    });
+
+    document.getElementById("speakBtn").addEventListener("click", () => {
+      if (!("speechSynthesis" in window)) {
+        status.textContent = "這個瀏覽器不支援朗讀功能。";
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const text = plainTextFromHTML(scripts[currentLang][currentMode].html);
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = currentLang === "zh" ? "zh-TW" : currentLang === "ja" ? "ja-JP" : "en-US";
+      u.rate = currentLang === "ja" ? 0.82 : 0.92;
+      window.speechSynthesis.speak(u);
+      status.textContent = "正在朗讀。";
+    });
+
+    document.getElementById("stopBtn").addEventListener("click", () => {
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      status.textContent = "已停止朗讀。";
+    });
+
+    render();
+  </script>
+</body>
+</html>
