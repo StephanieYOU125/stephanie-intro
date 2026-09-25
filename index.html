@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <title>Stephanie Universe | Personal Enterprise</title>
+  <meta name="description" content="Stephanie You 的個人品牌與三語自我介紹網站。以一人公司的方式經營研究、學習、公共服務與創作。" />
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #070707;
+      --bg2: #0e0e0e;
+      --panel: rgba(255,255,255,.055);
+      --panel2: rgba(255,255,255,.085);
+      --line: rgba(255,255,255,.13);
+      --gold: #d6b46a;
+      --gold2: #f0d895;
+      --cream: #f7f1e7;
+      --muted: #b7afa3;
+      --muted2: #8f887f;
+      --green: #95c6a8;
+      --shadow: 0 28px 80px rgba(0,0,0,.45);
+      --radius: 28px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--cream);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Noto Sans TC", "Noto Sans JP", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 16% -4%, rgba(214,180,106,.18), transparent 30%),
+        radial-gradient(circle at 90% 8%, rgba(255,255,255,.065), transparent 25%),
+        linear-gradient(135deg, #050505, var(--bg2) 48%, #050505);
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .skip { position: absolute; left: -9999px; }
+    .skip:focus { left: 16px; top: 16px; z-index: 100; background: #fff; color:#000; padding:10px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      min-height: 76px;
+      padding: 0 5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      background: rgba(0,0,0,.66);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      font-weight: 900;
+      letter-spacing: 2.3px;
+      white-space: nowrap;
+    }
+    .brand span { color: var(--gold); }
+    nav { display:flex; gap:22px; align-items:center; }
+    nav a { color: var(--muted); font-size: 13px; }
+    nav a:hover { color: var(--gold2); }
+
+    .hero {
+      min-height: 82vh;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 98px 30px 60px;
+      display: grid;
+      grid-template-columns: 1.12fr .88fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .eyebrow {
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 850;
+      font-size: 12px;
+    }
+    h1 {
+      margin: 17px 0 22px;
+      font-size: clamp(48px, 7vw, 92px);
+      line-height: .96;
+      letter-spacing: -3.4px;
+    }
+    .hero-copy {
+      max-width: 720px;
+      color: #ddd4c7;
+      font-size: 17px;
+      line-height: 1.9;
+    }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      border:1px solid var(--gold); border-radius:999px;
+      padding:12px 18px; background:var(--gold); color:#111;
+      font-weight:850; cursor:pointer;
+    }
+    .btn.secondary { background:transparent; color:var(--gold2); }
+    .btn:hover { transform: translateY(-1px); }
+
+    .company-card {
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      padding: 28px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.035));
+      box-shadow: var(--shadow);
+    }
+    .company-top {
+      display:flex; justify-content:space-between; gap:20px; align-items:flex-start;
+      padding-bottom:20px; border-bottom:1px solid var(--line);
+    }
+    .company-mark {
+      width:64px; height:64px; display:grid; place-items:center;
+      border-radius:20px; color:#111; background:var(--gold);
+      font-weight:950; font-size:24px;
+    }
+    .status-dot {
+      display:inline-flex; align-items:center; gap:7px; color:var(--green);
+      font-size:12px; font-weight:800;
+    }
+    .status-dot::before {
+      content:""; width:8px; height:8px; border-radius:50%; background:var(--green);
+      box-shadow:0 0 0 5px rgba(149,198,168,.10);
+    }
+    .company-card h2 { margin:20px 0 5px; font-size:30px; }
+    .company-card .sub { color:var(--muted); font-size:14px; }
+    .facts { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:24px; }
+    .fact {
+      padding:15px; border:1px solid var(--line); border-radius:16px;
+      background:rgba(0,0,0,.20);
+    }
+    .fact small { display:block; color:var(--muted2); font-size:10px; letter-spacing:.12em; text-transform:uppercase; }
+    .fact strong { display:block; margin-top:7px; font-size:14px; line-height:1.45; }
+
+    .section { max-width:1240px; margin:0 auto; padding:66px 30px; }
+    .section-head {
+      display:flex; justify-content:space-between; align-items:end; gap:30px;
+      margin-bottom:28px;
+    }
+    .section-head h2 { margin:0; font-size:clamp(30px,4vw,50px); letter-spacing:-1.5px; }
+    .section-head p { max-width:540px; margin:0; color:var(--muted); line-height:1.75; }
+    .kicker { color:var(--gold); font-size:11px; font-weight:850; letter-spacing:.18em; text-transform:uppercase; margin-bottom:10px; }
+
+    .mission {
+      padding:34px; border-radius:var(--radius);
+      border:1px solid rgba(214,180,106,.30);
+      background:linear-gradient(135deg, rgba(214,180,106,.14), rgba(255,255,255,.035));
+      font-size:clamp(24px,3.6vw,44px); line-height:1.35; letter-spacing:-.8px;
+    }
+    .mission strong { color:var(--gold2); }
+
+    .units { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+    .unit {
+      min-height:250px; padding:24px; border:1px solid var(--line);
+      border-radius:24px; background:var(--panel);
+      display:flex; flex-direction:column;
+    }
+    .unit-num { color:var(--gold); font-size:11px; letter-spacing:.16em; font-weight:850; }
+    .unit h3 { margin:22px 0 10px; font-size:21px; }
+    .unit p { margin:0; color:var(--muted); line-height:1.75; font-size:14px; }
+    .unit .unit-footer { margin-top:auto; padding-top:20px; color:var(--gold2); font-size:12px; }
+
+    .assets { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .asset {
+      padding:26px; border:1px solid var(--line); border-radius:24px;
+      background:var(--panel);
+    }
+    .asset h3 { margin:0 0 9px; font-size:19px; }
+    .asset p { margin:0; color:var(--muted); line-height:1.75; font-size:14px; }
+
+    .strategy-grid { display:grid; grid-template-columns:1.1fr .9fr; gap:20px; }
+    .roadmap, .principles {
+      border:1px solid var(--line); border-radius:var(--radius); background:var(--panel); padding:28px;
+    }
+    .roadmap-item {
+      display:grid; grid-template-columns:100px 1fr; gap:14px; padding:17px 0;
+      border-bottom:1px solid var(--line);
+    }
+    .roadmap-item:last-child { border-bottom:0; }
+    .roadmap-item strong { color:var(--gold2); font-size:13px; }
+    .roadmap-item div { color:var(--muted); line-height:1.65; font-size:14px; }
+    .principle {
+      padding:16px 0; border-bottom:1px solid var(--line);
+    }
+    .principle:last-child { border-bottom:0; }
+    .principle b { color:var(--cream); }
+    .principle span { display:block; color:var(--muted); margin-top:6px; line-height:1.6; font-size:13px; }
+
+    .intro-shell {
+      border:1px solid var(--line); border-radius:32px; background:var(--panel);
+      overflow:hidden; box-shadow:var(--shadow);
+    }
+    .intro-toolbar {
+      padding:18px; display:flex; flex-wrap:wrap; gap:9px; align-items:center;
+      border-bottom:1px solid var(--line); background:rgba(0,0,0,.20);
+    }
+    .tab, .mode, .tool {
+      border:1px solid var(--line); border-radius:999px; padding:9px 13px;
+      background:rgba(255,255,255,.04); color:var(--muted); cursor:pointer;
+    }
+    .tab.active, .mode.active { background:var(--gold); border-color:var(--gold); color:#111; font-weight:850; }
+    .tool { color:var(--gold2); border-color:rgba(214,180,106,.25); }
+    .intro-body { display:grid; grid-template-columns:1fr 300px; }
+    .script-area { padding:30px; }
+    .script-meta { color:var(--muted2); font-size:12px; margin-bottom:20px; }
+    .script-meta strong { color:var(--gold2); font-size:14px; margin-right:10px; }
+    .script { font-size:clamp(18px,2vw,25px); line-height:1.95; }
+    .script p { margin:0 0 18px; }
+    ruby rt { color:var(--gold2); font-size:.48em; }
+    .intro-side { border-left:1px solid var(--line); padding:26px; background:rgba(0,0,0,.18); }
+    .intro-side h3 { margin:0 0 12px; font-size:15px; color:var(--gold2); }
+    .intro-side p, .intro-side li { color:var(--muted); line-height:1.7; font-size:13px; }
+    .intro-side ul { margin:0; padding-left:18px; }
+    .status { min-height:22px; color:var(--gold2); font-size:12px; margin-top:12px; }
+
+    .footer-note {
+      max-width:1240px; margin:0 auto; padding:20px 30px 70px;
+      color:var(--muted2); font-size:12px; line-height:1.7;
+    }
+    footer { padding:30px; text-align:center; color:#80796f; border-top:1px solid var(--line); font-size:12px; }
+
+    @media (max-width: 1000px) {
+      nav { display:none; }
+      .hero { grid-template-columns:1fr; min-height:auto; }
+      .units { grid-template-columns:repeat(2,1fr); }
+      .assets { grid-template-columns:1fr; }
+      .strategy-grid { grid-template-columns:1fr; }
+      .intro-body { grid-template-columns:1fr; }
+      .intro-side { border-left:0; border-top:1px solid var(--line); }
+    }
+    @media (max-width: 620px) {
+      header { padding:0 18px; }
+      .hero, .section, .footer-note { padding-left:18px; padding-right:18px; }
+      .hero { padding-top:62px; }
+      h1 { font-size:48px; letter-spacing:-2px; }
+      .facts, .units { grid-template-columns:1fr; }
+      .section-head { display:block; }
+      .section-head p { margin-top:12px; }
+      .mission { padding:24px; font-size:26px; }
+      .roadmap-item { grid-template-columns:1fr; gap:5px; }
+      .script-area { padding:22px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header>
+    <a href="#top" class="brand">STEPHANIE<span> UNIVERSE</span></a>
+    <nav aria-label="Main navigation">
+      <a href="#company">Company</a>
+      <a href="#units">Business Units</a>
+      <a href="#assets">Core Assets</a>
+      <a href="#strategy">Strategy</a>
+      <a href="#intro">Introduction</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div>
+        <div class="eyebrow">Personal Enterprise · Human-Centered Safety · Research · Creation</div>
+        <h1>Run the person.<br>Build the system.</h1>
+        <p class="hero-copy">
+          我把自己當成一間長期經營的一人公司：時間是資本，能力是資產，經驗是資料，
+          每一次探索都要留下可以再次使用的價值。Stephanie Universe 不是一份履歷，
+          而是一個持續迭代的個人事業系統。
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href="#intro">三語自我介紹</a>
+          <a class="btn secondary" href="#strategy">View Strategy</a>
+        </div>
+      </div>
+
+      <aside class="company-card" id="company">
+        <div class="company-top">
+          <div class="company-mark">SU</div>
+          <div class="status-dot">Operating · 2026</div>
+        </div>
+        <h2>Stephanie Universe</h2>
+        <div class="sub">A personal enterprise operated by Stephanie You</div>
+        <div class="facts">
+          <div class="fact"><small>Founder</small><strong>Stephanie You<br>游文歆</strong></div>
+          <div class="fact"><small>Base</small><strong>Taiwan ↔ Tokyo</strong></div>
+          <div class="fact"><small>Focus</small><strong>Human · Technology · Safety</strong></div>
+          <div class="fact"><small>Stage</small><strong>PhD / Research Expansion</strong></div>
+          <div class="fact"><small>Capital</small><strong>Time · Skills · Experience</strong></div>
+          <div class="fact"><small>Output</small><strong>Research · Systems · Stories</strong></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="kicker">Mission</div>
+      <div class="mission">
+        Turn diverse experiences into <strong>compounding capability</strong> —
+        then use that capability to understand people, improve systems, and create safer environments.
+      </div>
+    </section>
+
+    <section class="section" id="units">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Business Portfolio</div>
+          <h2>Business Units</h2>
+        </div>
+        <p>把「我做過很多不同的事情」改成「我有幾條持續累積的事業線」，每一條都要產生可轉移的能力與作品。</p>
+      </div>
+      <div class="units">
+        <article class="unit">
+          <div class="unit-num">01 · SAFETY</div>
+          <h3>Safety & Mobility</h3>
+          <p>從第一線公共服務、交通管理到行人安全研究，累積風險判斷、現場決策與安全系統思維。</p>
+          <div class="unit-footer">Field → Research → Safer Systems</div>
+        </article>
+        <article class="unit">
+          <div class="unit-num">02 · TECHNOLOGY</div>
+          <h3>AI & Data</h3>
+          <p>運用電腦視覺、軌跡分析與資料思維，把肉眼難以持續觀察的風險轉成可以分析的資訊。</p>
+          <div class="unit-footer">Observe → Measure → Learn</div>
+        </article>
+        <article class="unit">
+          <div class="unit-num">03 · GLOBAL</div>
+          <h3>Learning & Exploration</h3>
+          <p>透過跨文化生活、旅行、語言與跨領域學習，建立理解陌生系統與快速遷移能力的方法。</p>
+          <div class="unit-footer">Explore → Extract → Transfer</div>
+        </article>
+        <article class="unit">
+          <div class="unit-num">04 · MEDIA</div>
+          <h3>Communication & Storytelling</h3>
+          <p>把研究、經驗與複雜概念整理成可理解的內容，透過演講、網站與未來出版累積個人知識資產。</p>
+          <div class="unit-footer">Experience → Meaning → Story</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="assets">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Balance Sheet</div>
+          <h2>Core Assets</h2>
+        </div>
+        <p>公司看資產，不只看職稱。這裡放的是跨場景仍可使用、會隨經驗累積而升值的底層能力。</p>
+      </div>
+      <div class="assets">
+        <article class="asset">
+          <h3>Field Judgment</h3>
+          <p>在資訊不完整、時間有限的情況下辨識主要風險、先處理關鍵問題，再持續修正。</p>
+        </article>
+        <article class="asset">
+          <h3>Coordination</h3>
+          <p>把不同角色、規則與需求放進同一個運作框架，釐清責任、資訊流與下一步。</p>
+        </article>
+        <article class="asset">
+          <h3>System Thinking</h3>
+          <p>不只解決單一事件，而是找出重複出現的模式，思考流程、資料與制度如何一起改善。</p>
+        </article>
+        <article class="asset">
+          <h3>Learning Transfer</h3>
+          <p>從一個領域抓出原理，再把它轉移到新的場景；不是每次從零開始，而是讓經驗彼此連接。</p>
+        </article>
+        <article class="asset">
+          <h3>Discipline</h3>
+          <p>把模糊目標拆成可以執行、檢查與持續調整的步驟，讓探索不只停在興趣。</p>
+        </article>
+        <article class="asset">
+          <h3>Curiosity</h3>
+          <p>願意進入陌生領域，但以明確目標與限制收斂，把好奇心轉換成真正留下來的能力。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="strategy">
+      <div class="section-head">
+        <div>
+          <div class="kicker">2026 Operating Plan</div>
+          <h2>Current Strategy</h2>
+        </div>
+        <p>不是同時追求所有機會，而是讓現在最重要的主線取得資源，同時保留可累積的長期資產。</p>
+      </div>
+      <div class="strategy-grid">
+        <div class="roadmap">
+          <div class="roadmap-item">
+            <strong>CORE</strong>
+            <div>進入東京大學博士階段，深化人因、交通安全、電腦視覺與風險研究。</div>
+          </div>
+          <div class="roadmap-item">
+            <strong>LANGUAGE</strong>
+            <div>提升日文與英文即時表達，讓研究能力能真正跨文化傳遞。</div>
+          </div>
+          <div class="roadmap-item">
+            <strong>KNOWLEDGE</strong>
+            <div>把研究、旅行與工作經驗系統化，形成可搜尋、可比較、可重複使用的個人知識庫。</div>
+          </div>
+          <div class="roadmap-item">
+            <strong>BRAND</strong>
+            <div>以 Stephanie Universe 整合研究、公開表達與「讓經驗複利」的長期內容主題。</div>
+          </div>
+        </div>
+
+        <div class="principles">
+          <div class="principle">
+            <b>01 · Explore with curiosity</b>
+            <span>進入新領域時先觀察，不急著用既有標籤判斷。</span>
+          </div>
+          <div class="principle">
+            <b>02 · Focus with constraints</b>
+            <span>設定完成標準，避免好奇心無限發散。</span>
+          </div>
+          <div class="principle">
+            <b>03 · Extract the principle</b>
+            <span>每段經歷都問：我真正學會的是什麼？</span>
+          </div>
+          <div class="principle">
+            <b>04 · Transfer the asset</b>
+            <span>把能力帶到下一個場景，讓走過的路留下複利。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="intro">
+      <div class="section-head">
+        <div>
+          <div class="kicker">External Communication</div>
+          <h2>Company Introduction = Self Introduction</h2>
+        </div>
+        <p>像公司簡介一樣，不一次講完所有經歷，而是依對象與時間，輸出最 relevant 的版本。</p>
+      </div>
+
+      <div class="intro-shell">
+        <div class="intro-toolbar">
+          <button class="tab active" data-lang="zh">中文</button>
+          <button class="tab" data-lang="en">English</button>
+          <button class="tab" data-lang="ja">日本語</button>
+          <span style="width:8px"></span>
+          <button class="mode active" data-mode="short">20 秒</button>
+          <button class="mode" data-mode="full">60 秒</button>
+          <button class="tool" id="copyBtn">Copy</button>
+          <button class="tool" id="speakBtn">▶ Speak</button>
+          <button class="tool" id="stopBtn">■ Stop</button>
+        </div>
+
+        <div class="intro-body">
+          <div class="script-area">
+            <div class="script-meta"><strong id="scriptTitle"></strong><span id="useCase"></span></div>
+            <div class="script" id="script"></div>
+            <div class="status" id="status"></div>
+          </div>
+          <aside class="intro-side">
+            <h3>Communication Rule</h3>
+            <p>公司不會在 elevator pitch 裡念完年度報告；自我介紹也一樣。</p>
+            <ul>
+              <li>先說我是誰。</li>
+              <li>再說我現在主要在做什麼。</li>
+              <li>只留一個讓對方可以追問的鉤子。</li>
+              <li>細節等對方有興趣再展開。</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Stephanie Universe 是個人品牌與個人營運框架，不代表依法登記成立之公司或法人。
+    </div>
+  </main>
+
+  <footer>© 2026 Stephanie You · Stephanie Universe</footer>
+
+<script>
+const scripts = {
+  zh: {
+    short: {
+      title: "中文｜20 秒",
+      use: "第一次見面 / 課堂 / 快速交流",
+      html: `<p>大家好，我是游文歆，英文名字是 Stephanie，來自台灣。</p>
+             <p>我的背景結合公共服務、交通安全與研究，目前正準備進入東京大學博士階段，想進一步研究人、科技與城市安全之間的關係。</p>
+             <p>很高興認識大家。</p>`
+    },
+    full: {
+      title: "中文｜60 秒",
+      use: "教授 / 研究室 / 正式交流",
+      html: `<p>大家好，我是游文歆，英文名字是 Stephanie，來自台灣。</p>
+             <p>我過去在台北從事公共服務與警政工作，累積交通、安全管理與跨單位協調的實務經驗，同時完成國立台灣大學交通工程碩士。</p>
+             <p>我的碩士研究使用電腦視覺分析行人與車輛的互動，評估行人穿越道的安全。2026 年秋季，我將進入東京大學博士階段，希望把實務經驗、交通工程、AI 視覺分析與人因研究連結起來，理解人如何感受風險、做決策，以及城市如何被設計得更安全。</p>
+             <p>我也很喜歡跨領域學習、旅行與語言。很高興認識大家，也期待之後有機會交流。</p>`
+    }
+  },
+  en: {
+    short: {
+      title: "English｜20 seconds",
+      use: "First meetings / class / quick networking",
+      html: `<p>Hello, I'm Wun-Sin You, and you can call me Stephanie. I'm from Taiwan.</p>
+             <p>My background combines public service, transportation safety, and research. I am preparing to begin my PhD studies at the University of Tokyo, where I want to explore the relationship between people, technology, and safer cities.</p>
+             <p>It's nice to meet you.</p>`
+    },
+    full: {
+      title: "English｜60 seconds",
+      use: "Professors / labs / formal networking",
+      html: `<p>Hello, I'm Wun-Sin You, and you can call me Stephanie. I'm from Taiwan.</p>
+             <p>I have several years of experience in public service and policing in Taipei, where I worked on traffic operations, safety management, and coordination across different agencies. At the same time, I completed my master's degree in Transportation Engineering at National Taiwan University.</p>
+             <p>My master's research used computer vision to analyze interactions between pedestrians and vehicles and to evaluate pedestrian crossing safety. In the autumn of 2026, I will begin my doctoral studies at the University of Tokyo. I hope to connect real-world safety experience with transportation engineering, AI-based vision analysis, and human factors research.</p>
+             <p>Outside research, I enjoy learning across disciplines, traveling, and studying languages. It's very nice to meet you.</p>`
+    }
+  },
+  ja: {
+    short: {
+      title: "日本語｜20秒",
+      use: "初対面 / 授業 / 短い交流",
+      html: `<p>はじめまして。<ruby>游文歆<rt>ユウ・ウンシン</rt></ruby>です。Stephanie と<ruby>呼<rt>よ</rt></ruby>んでください。<ruby>台湾<rt>たいわん</rt></ruby>から<ruby>来<rt>き</rt></ruby>ました。</p>
+             <p>これまで<ruby>公共<rt>こうきょう</rt></ruby>サービスと<ruby>交通安全<rt>こうつうあんぜん</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>をしてきました。これから<ruby>東京大学<rt>とうきょうだいがく</rt></ruby>の<ruby>博士課程<rt>はくしかてい</rt></ruby>で、<ruby>人<rt>ひと</rt></ruby>と<ruby>技術<rt>ぎじゅつ</rt></ruby>と<ruby>都市<rt>とし</rt></ruby>の<ruby>安全<rt>あんぜん</rt></ruby>について<ruby>研究<rt>けんきゅう</rt></ruby>します。</p>
+             <p>よろしくお<ruby>願<rt>ねが</rt></ruby>いします。</p>`
+    },
+    full: {
+      title: "日本語｜60秒",
+      use: "先生 / 研究室 / フォーマルな交流",
+      html: `<p>はじめまして。<ruby>游文歆<rt>ユウ・ウンシン</rt></ruby>です。Stephanie と<ruby>呼<rt>よ</rt></ruby>んでください。<ruby>台湾<rt>たいわん</rt></ruby>から<ruby>来<rt>き</rt></ruby>ました。</p>
+             <p>これまで<ruby>台北<rt>たいぺい</rt></ruby>で<ruby>公共<rt>こうきょう</rt></ruby>サービスと<ruby>警察<rt>けいさつ</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>をして、<ruby>交通<rt>こうつう</rt></ruby>、<ruby>安全管理<rt>あんぜんかんり</rt></ruby>、いろいろな<ruby>機関<rt>きかん</rt></ruby>との<ruby>調整<rt>ちょうせい</rt></ruby>を<ruby>経験<rt>けいけん</rt></ruby>しました。また、<ruby>台湾大学<rt>たいわんだいがく</rt></ruby>で<ruby>交通工学<rt>こうつうこうがく</rt></ruby>の<ruby>修士課程<rt>しゅうしかてい</rt></ruby>を<ruby>修了<rt>しゅうりょう</rt></ruby>しました。</p>
+             <p><ruby>修士研究<rt>しゅうしけんきゅう</rt></ruby>では、コンピュータビジョンを<ruby>使<rt>つか</rt></ruby>って、<ruby>歩行者<rt>ほこうしゃ</rt></ruby>と<ruby>車<rt>くるま</rt></ruby>の<ruby>動<rt>うご</rt></ruby>きを<ruby>分析<rt>ぶんせき</rt></ruby>し、<ruby>横断歩道<rt>おうだんほどう</rt></ruby>の<ruby>安全性<rt>あんぜんせい</rt></ruby>を<ruby>研究<rt>けんきゅう</rt></ruby>しました。</p>
+             <p>2026<ruby>年<rt>ねん</rt></ruby><ruby>秋<rt>あき</rt></ruby>から、<ruby>東京大学<rt>とうきょうだいがく</rt></ruby>の<ruby>博士課程<rt>はくしかてい</rt></ruby>で、<ruby>実務経験<rt>じつむけいけん</rt></ruby>、<ruby>交通工学<rt>こうつうこうがく</rt></ruby>、AI、そして<ruby>人<rt>ひと</rt></ruby>の<ruby>行動<rt>こうどう</rt></ruby>をつなげて、より<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>都市<rt>とし</rt></ruby>について<ruby>研究<rt>けんきゅう</rt></ruby>したいです。よろしくお<ruby>願<rt>ねが</rt></ruby>いします。</p>`
+    }
+  }
+};
+
+let currentLang = "zh";
+let currentMode = "short";
+const elScript = document.getElementById("script");
+const elTitle = document.getElementById("scriptTitle");
+const elUse = document.getElementById("useCase");
+const elStatus = document.getElementById("status");
+
+function plainText(html) {
+  const d = document.createElement("div");
+  d.innerHTML = html;
+  d.querySelectorAll("rt").forEach(x => x.remove());
+  return d.innerText.replace(/\n{3,}/g, "\n\n").trim();
+}
+function render() {
+  const item = scripts[currentLang][currentMode];
+  elTitle.textContent = item.title;
+  elUse.textContent = item.use;
+  elScript.innerHTML = item.html;
+  elStatus.textContent = "";
+  document.documentElement.lang = currentLang === "zh" ? "zh-Hant" : currentLang;
+}
+document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  currentLang = btn.dataset.lang;
+  render();
+}));
+document.querySelectorAll(".mode").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".mode").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  currentMode = btn.dataset.mode;
+  render();
+}));
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  const t = plainText(scripts[currentLang][currentMode].html);
+  try { await navigator.clipboard.writeText(t); elStatus.textContent = "Copied."; }
+  catch { elStatus.textContent = "Copy was blocked by the browser. Please select the text manually."; }
+});
+document.getElementById("speakBtn").addEventListener("click", () => {
+  if (!("speechSynthesis" in window)) { elStatus.textContent = "Speech is not supported by this browser."; return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(plainText(scripts[currentLang][currentMode].html));
+  u.lang = currentLang === "zh" ? "zh-TW" : currentLang === "ja" ? "ja-JP" : "en-US";
+  u.rate = currentLang === "ja" ? .82 : .92;
+  speechSynthesis.speak(u);
+  elStatus.textContent = "Speaking…";
+});
+document.getElementById("stopBtn").addEventListener("click", () => {
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  elStatus.textContent = "Stopped.";
+});
+render();
+</script>
+</body>
+</html>
